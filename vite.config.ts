@@ -1,7 +1,7 @@
-import reactRefresh from '@vitejs/plugin-react-refresh'
-import dotenv from 'dotenv'
+import reactRefresh from '@vitejs/plugin-react-refresh';
+import dotenv from 'dotenv';
 
-dotenv.config() // load env vars from .env
+dotenv.config(); // load env vars from .env
 
 /**
  * https://vitejs.dev/config/
@@ -13,6 +13,6 @@ export default {
     host: '0.0.0.0',
     hmr: {
       port: 443,
-    }
-  }
-}
+    },
+  },
+};
