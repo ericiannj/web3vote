@@ -2,7 +2,20 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import abi from "./utils/VotePortal.json";
 import './App.css';
+
 // import.meta.env.VITE_CONTRACT_ADDRESS
+
+type Vote = {
+  voter: string,
+  timestamp: number,
+  message: string
+}
+
+type VotesCleaned = {
+  address: string,
+  timestamp: Date,
+  message: string
+}
 
 export default function App() {
 
@@ -10,16 +23,18 @@ export default function App() {
   /**
    * Cria uma variável para guardar o endereço do contrato após o deploy!
    */
-  const [allVotes, setAllVotes] = useState([]);
+  const [allVotes, setAllVotes] = useState<VotesCleaned[]>([]);
   const contractAddress = "0xB87aA15018cc392F90C177Ee11c33BeFf5669A8f";
   const contractABI = abi.abi;
-
+  
     /*
    * Método para consultar todos os tchauzinhos do contrato
    */
+    
+
   const getAllVotes = async () => {
     try {
-      const { ethereum } = window;
+      const { ethereum } = window as Window;
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
@@ -31,11 +46,12 @@ export default function App() {
         const votes = await votePortalContract.getAllVotes();
 
 
+        
         /*
          * Apenas precisamos do endereço, data/horário, e mensagem na nossa tela, então vamos selecioná-los
          */
-        let votesCleaned = [];
-        votes.forEach(vote => {
+        let votesCleaned: VotesCleaned[] = [];
+        votes.forEach((vote : Vote) => {
           votesCleaned.push({
             address: vote.voter,
             timestamp: new Date(vote.timestamp * 1000),
