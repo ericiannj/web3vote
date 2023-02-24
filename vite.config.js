@@ -1,4 +1,7 @@
 import reactRefresh from '@vitejs/plugin-react-refresh'
+import dotenv from 'dotenv'
+
+dotenv.config() // load env vars from .env
 
 /**
  * https://vitejs.dev/config/
