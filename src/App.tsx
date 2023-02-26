@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import abi from './utils/VotePortal.json';
 import './App.css';
+import { LoginWalletContainer } from './components/LoginWalletContainer';
+import { VotationContainer } from './components/VotationContainer';
 
 // import.meta.env.VITE_CONTRACT_ADDRESS
 
@@ -46,7 +48,7 @@ export default function App() {
         /*
          * Apenas precisamos do endereço, data/horário, e mensagem na nossa tela, então vamos selecioná-los
          */
-        let votesCleaned: VotesCleaned[] = [];
+        const votesCleaned: VotesCleaned[] = [];
         votes.forEach((vote: Vote) => {
           votesCleaned.push({
             address: vote.voter,
@@ -150,28 +152,16 @@ export default function App() {
 
   return (
     <div className="mainContainer">
-      <div className="dataContainer">
-        <div className="header">🗳️ Web3Vote</div>
-        <div className="bio">Bem-vindo a sua Plataforma de Votação Descentralizada</div>
-        {currentAccount ? (
-          <button className="waveButton" onClick={vote}>
-            Votar 🌟
-          </button>
-        ) : (
-          <button className="waveButton" onClick={connectWallet}>
-            Conectar carteira
-          </button>
-        )}
-        {allVotes.map((vote, index) => {
-          return (
-            <div key={index} style={{ backgroundColor: 'OldLace', marginTop: '16px', padding: '8px' }}>
-              <div>Endereço: {vote.address}</div>
-              <div>Data/Horário: {vote.timestamp.toString()}</div>
-              <div>Mensagem: {vote.message}</div>
-            </div>
-          );
-        })}
-      </div>
+      {!currentAccount ? <LoginWalletContainer connectWallet={connectWallet} /> : <VotationContainer />}
+      {allVotes.map((vote, index) => {
+        return (
+          <div key={index} style={{ backgroundColor: 'OldLace', marginTop: '16px', padding: '8px' }}>
+            <div>Endereço: {vote.address}</div>
+            <div>Data/Horário: {vote.timestamp.toString()}</div>
+            <div>Mensagem: {vote.message}</div>
+          </div>
+        );
+      })}
     </div>
   );
 }
