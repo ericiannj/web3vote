@@ -1,9 +1,15 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
+
 import './index.css';
 import { CreationModal } from '../CreationModal';
 import { VotationModal } from '../VotationModal';
+import { BallotsCleaned } from '../../App';
 
-export const VotationContainer = () => {
+type VotationContainerProps = {
+  allBallots: BallotsCleaned[];
+};
+
+export const VotationContainer = (props: VotationContainerProps) => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const handleCreateOpen = () => setIsCreateOpen(true);
   const handleCreateClose = () => setIsCreateOpen(false);
@@ -15,10 +21,17 @@ export const VotationContainer = () => {
     <div className="votation-container">
       <div className="votation-header">🗳️ Web3Vote</div>
       <div className="votation-list">
-        <div className="chip-container" onClick={handleVotationOpen}>
-          <p>Título da Votação</p>
-        </div>
+        {props.allBallots.map((ballot, index) => {
+          return (
+            <div key={index} className="chip-container" onClick={handleVotationOpen}>
+              <p>{ballot.title}</p>
+            </div>
+          );
+        })}
       </div>
+      {/* <div key={index} className="chip-container" onClick={handleVotationOpen}>
+              <p>Título da Votação</p>
+            </div> */}
       <div className="button-container">
         <button className="create-button" onClick={handleCreateOpen}>
           Nova votação
