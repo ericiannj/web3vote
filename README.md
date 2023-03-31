@@ -1,14 +1,21 @@
-## Running React on Repl.it
+# Smart Contracts
 
-[React](https://reactjs.org/) is a popular JavaScript library for building user interfaces.
+The repository is the project for completing the Digital Systems and Media course at the Federal University of Ceará. It deals with a platform for conducting ballots from a decentralized blockchain-based system.
 
-[Vite](https://vitejs.dev/) is a blazing fast frontend build tool that includes features like Hot Module Reloading (HMR), optimized builds, and TypeScript support out of the box.
+## Installation
 
-Using the two in conjunction is one of the fastest ways to build a web app.
+Use NPM to install the dependencies
 
-### Getting Started
+```bash
+npm install
+```
 
-- Hit run
-- Edit [App.jsx](#src/App.jsx) and watch it live update!
+## Usage
 
-By default, Replit runs the `dev` script, but you can configure it by changing the `run` field in the `.replit` file.
+The repository uses the addresses of the smart contracts involved in carrying out operations (creating a new Ballot, voting on a proposal for a given Ballot...). You need to update the link when there are changes to these agreements.
+
+To view the user interfaces:
+
+```bash
+npm run dev
+```
