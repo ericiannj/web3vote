@@ -1,4 +1,4 @@
-# Smart Contracts
+# Web3Vote
 
 The repository is the project for completing the Digital Systems and Media course at the Federal University of Ceará. It deals with a platform for conducting ballots from a decentralized blockchain-based system.
 
