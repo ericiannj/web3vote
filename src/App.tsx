@@ -16,7 +16,7 @@ export type BallotsCleaned = {
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState('');
   const [allBallots, setAllBallots] = useState<BallotsCleaned[]>([]);
-  const ballotContractAddress = '0x7aC797B595321924Bc169c4d76148Fe0a2F5c84D';
+  const ballotContractAddress = import.meta.env.VITE_BALLOT_CONTRACT_ADDRESS;
   const ballotABI = ballotAbi.abi;
 
   useEffect(() => {
