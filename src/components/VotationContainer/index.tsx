@@ -7,6 +7,7 @@ import { BallotsCleaned } from '../../App';
 
 type VotationContainerProps = {
   allBallots: BallotsCleaned[];
+  getAllBallots: () => Promise<void>;
 };
 
 export const VotationContainer = (props: VotationContainerProps) => {
@@ -39,7 +40,7 @@ export const VotationContainer = (props: VotationContainerProps) => {
       </div>
 
       <VotationModal isVotationOpen={isVotationOpen} handleClose={handleVotationClose} />
-      <CreationModal isCreateOpen={isCreateOpen} handleClose={handleCreateClose} />
+      <CreationModal isCreateOpen={isCreateOpen} handleClose={handleCreateClose} getAllBallots={props.getAllBallots} />
     </div>
   );
 };

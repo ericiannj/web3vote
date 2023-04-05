@@ -7,20 +7,23 @@ import { useState } from 'react';
 type CreationModalProps = {
   isCreateOpen: boolean;
   handleClose: () => void;
+  getAllBallots: () => Promise<void>;
 };
 
 type Ballot = {
   title: string;
   description: string;
+  proposals: string[];
 };
 
 const initialNewBallot = {
   title: '',
   description: '',
+  proposals: ['', '', '', ''],
 };
 
 export const CreationModal = (props: CreationModalProps) => {
-  const { isCreateOpen, handleClose } = props;
+  const { isCreateOpen, handleClose, getAllBallots } = props;
   const [newBallot, setNewballot] = useState<Ballot>(initialNewBallot);
   const ballotContractAddress = import.meta.env.VITE_BALLOT_CONTRACT_ADDRESS;
   const ballotABI = ballotAbi.abi;
@@ -33,8 +36,21 @@ export const CreationModal = (props: CreationModalProps) => {
     setNewballot({ ...newBallot, description: value });
   };
 
+  const handleProposalsChange = (index: number, value: string) => {
+    const newProposalValues = [...newBallot.proposals];
+    newProposalValues[index] = value;
+    setNewballot({ ...newBallot, proposals: newProposalValues });
+  };
+
   const handleSubmit = () => {
-    if (newBallot !== undefined) createBallot(newBallot);
+    try {
+      if (newBallot !== undefined) createBallot(newBallot);
+    } catch {
+      console.log('Falha na criação da Votação');
+    } finally {
+      handleClose();
+      getAllBallots();
+    }
   };
 
   const createBallot = async (newBallot: Ballot) => {
@@ -49,7 +65,11 @@ export const CreationModal = (props: CreationModalProps) => {
         let countBallots = await ballotPortalContract.getTotalBallots();
         console.log('Recovering the number of ballots...', countBallots.toNumber());
 
-        const createBallotTxn = await ballotPortalContract.createBallot(newBallot.title, newBallot.description);
+        const createBallotTxn = await ballotPortalContract.createBallot(
+          newBallot.title,
+          newBallot.description,
+          newBallot.proposals,
+        );
         console.log('Mining...', createBallotTxn.hash);
 
         await createBallotTxn.wait();
@@ -80,16 +100,32 @@ export const CreationModal = (props: CreationModalProps) => {
             value={newBallot.description}
             onChange={(ev) => handleDescriptionChange(ev.target.value)}
           />
+          <div className="options-container">
+            <input
+              placeholder="Proposta 1"
+              value={newBallot.proposals[0]}
+              onChange={(ev) => handleProposalsChange(0, ev.target.value)}
+            />
+            <input
+              placeholder="Proposta 2"
+              value={newBallot.proposals[1]}
+              onChange={(ev) => handleProposalsChange(1, ev.target.value)}
+            />
+            <input
+              placeholder="Proposta 3"
+              value={newBallot.proposals[2]}
+              onChange={(ev) => handleProposalsChange(2, ev.target.value)}
+            />
+            <input
+              placeholder="Proposta 4"
+              value={newBallot.proposals[3]}
+              onChange={(ev) => handleProposalsChange(3, ev.target.value)}
+            />
+          </div>
+          <button className="createButton" onClick={handleSubmit}>
+            Criar votação
+          </button>
         </div>
-        {/* <div className="options-container">
-          <input placeholder="Opção 1" />
-          <input placeholder="Opção 2" />
-          <input placeholder="Opção 3" />
-          <input placeholder="Opção 4" />
-        </div> */}
-        <button className="waveButton" onClick={handleSubmit}>
-          Criar votação
-        </button>
       </div>
     </div>
   );

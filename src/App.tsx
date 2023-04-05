@@ -101,7 +101,7 @@ export default function App() {
       {!currentAccount ? (
         <LoginWalletContainer connectWallet={connectWallet} />
       ) : (
-        <VotationContainer allBallots={allBallots} />
+        <VotationContainer allBallots={allBallots} getAllBallots={getAllBallots} />
       )}
     </div>
   );
