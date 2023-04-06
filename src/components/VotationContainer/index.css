@@ -40,7 +40,7 @@
 }
 
 .button-container {
-  position: absolute;
+  /* position: absolute; */
   bottom: 230px;
   right: 44%;
 }

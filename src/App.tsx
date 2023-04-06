@@ -66,6 +66,7 @@ export default function App() {
             timestamp: new Date(ballot.timestamp * 1000),
             title: ballot.title,
             description: ballot.description,
+            proposals: ballot.proposals,
           };
         });
 

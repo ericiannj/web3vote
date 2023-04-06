@@ -4,6 +4,7 @@ import './index.css';
 import { CreationModal } from '../CreationModal';
 import { VotationModal } from '../VotationModal';
 import { BallotsCleaned } from '../../App';
+import { LoadingDialog } from '../LoadingDialog';
 
 type VotationContainerProps = {
   allBallots: BallotsCleaned[];
@@ -17,6 +18,7 @@ export const VotationContainer = (props: VotationContainerProps) => {
   const [isVotationOpen, setIsVotationOpen] = useState(false);
   const handleVotationOpen = () => setIsVotationOpen(true);
   const handleVotationClose = () => setIsVotationOpen(false);
+  const [loading, setLoading] = useState(false);
 
   return (
     <div className="votation-container">
@@ -30,17 +32,19 @@ export const VotationContainer = (props: VotationContainerProps) => {
           );
         })}
       </div>
-      {/* <div key={index} className="chip-container" onClick={handleVotationOpen}>
-              <p>Título da Votação</p>
-            </div> */}
+      <LoadingDialog loading={loading} />
       <div className="button-container">
         <button className="create-button" onClick={handleCreateOpen}>
           Nova votação
         </button>
       </div>
-
       <VotationModal isVotationOpen={isVotationOpen} handleClose={handleVotationClose} />
-      <CreationModal isCreateOpen={isCreateOpen} handleClose={handleCreateClose} getAllBallots={props.getAllBallots} />
+      <CreationModal
+        isCreateOpen={isCreateOpen}
+        handleClose={handleCreateClose}
+        getAllBallots={props.getAllBallots}
+        setLoading={setLoading}
+      />
     </div>
   );
 };

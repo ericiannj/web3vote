@@ -8,6 +8,7 @@ type CreationModalProps = {
   isCreateOpen: boolean;
   handleClose: () => void;
   getAllBallots: () => Promise<void>;
+  setLoading: (loading: boolean) => void;
 };
 
 type Ballot = {
@@ -23,8 +24,9 @@ const initialNewBallot = {
 };
 
 export const CreationModal = (props: CreationModalProps) => {
-  const { isCreateOpen, handleClose, getAllBallots } = props;
+  const { isCreateOpen, handleClose, getAllBallots, setLoading } = props;
   const [newBallot, setNewballot] = useState<Ballot>(initialNewBallot);
+
   const ballotContractAddress = import.meta.env.VITE_BALLOT_CONTRACT_ADDRESS;
   const ballotABI = ballotAbi.abi;
 
@@ -49,7 +51,7 @@ export const CreationModal = (props: CreationModalProps) => {
       console.log('Falha na criação da Votação');
     } finally {
       handleClose();
-      getAllBallots();
+      // getAllBallots();
     }
   };
 
@@ -65,6 +67,7 @@ export const CreationModal = (props: CreationModalProps) => {
         let countBallots = await ballotPortalContract.getTotalBallots();
         console.log('Recovering the number of ballots...', countBallots.toNumber());
 
+        setLoading(true);
         const createBallotTxn = await ballotPortalContract.createBallot(
           newBallot.title,
           newBallot.description,
@@ -74,9 +77,11 @@ export const CreationModal = (props: CreationModalProps) => {
 
         await createBallotTxn.wait();
         console.log('Mined -- ', createBallotTxn.hash);
+        setLoading(false);
 
         countBallots = await ballotPortalContract.getTotalBallots();
         console.log('Total of ballots...', countBallots.toNumber());
+        getAllBallots();
       } else {
         console.log('Ethereum Object not found!');
       }
