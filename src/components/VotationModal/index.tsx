@@ -1,41 +1,64 @@
+import { useState } from 'react';
+import { BallotsCleaned } from '../../App';
 import './index.css';
 import classNames from 'classnames';
 
 type VotationModalProps = {
   isVotationOpen: boolean;
   handleClose: () => void;
+  selectedBallot?: BallotsCleaned;
 };
 
 export const VotationModal = (props: VotationModalProps) => {
-  const { isVotationOpen, handleClose } = props;
+  const { isVotationOpen, handleClose, selectedBallot } = props;
+  const [isDisabled, setDisabled] = useState(false);
+  const [selectedProposal, setSelectedProposal] = useState('');
+
+  const handleProposalChange = (event) => {
+    setSelectedProposal(event.target.value);
+  };
+
+  const disableCreate = () => {
+    setDisabled(!isDisabled);
+  };
+
+  const handleSubmit = () => {
+    console.log('close');
+    handleClose();
+  };
 
   return (
     <div className={classNames('votation-modal', [{ show: isVotationOpen === true }])}>
       <div className={'votation-modal-container'}>
         <div className={'votation-header'}>
-          <p>Título da Votação</p>
+          <p>{selectedBallot?.title}</p>
           <button onClick={handleClose}>Fechar</button>
         </div>
         <div className={'votation-info-container'}>
-          <p>Descrição</p>
+          <p>{selectedBallot?.description}</p>
         </div>
         <div className="votation-options-container">
-          <div>
-            <input type="checkbox" id="opt1" name="Option 1" checked />
-            <label htmlFor="opt1">Option 1</label>
+          <div className="votation-options">
+            {selectedBallot?.proposals.map((proposal) => (
+              <div key={proposal} className="option">
+                <label htmlFor={proposal}>{proposal}</label>
+                <input
+                  type="checkbox"
+                  id={proposal}
+                  name={proposal}
+                  value={proposal}
+                  checked={selectedProposal === proposal}
+                  onChange={handleProposalChange}
+                />
+              </div>
+            ))}
           </div>
-          <div>
-            <input type="checkbox" id="opt2" name="Option 2" checked />
-            <label htmlFor="opt2">Option 2</label>
-          </div>
-          <div>
-            <input type="checkbox" id="opt3" name="Option 3" checked />
-            <label htmlFor="opt3">Option 3</label>
-          </div>
-          <div>
-            <input type="checkbox" id="opt4" name="Option 4" checked />
-            <label htmlFor="opt4">Option 4</label>
-          </div>
+          <button className="voteButton" onClick={handleSubmit} disabled={isDisabled}>
+            Criar votação
+          </button>
+          <button className="disableButton" onClick={disableCreate}>
+            Desabilitar votação
+          </button>
         </div>
       </div>
     </div>

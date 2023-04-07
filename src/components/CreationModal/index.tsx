@@ -44,14 +44,13 @@ export const CreationModal = (props: CreationModalProps) => {
     setNewballot({ ...newBallot, proposals: newProposalValues });
   };
 
-  const handleSubmit = () => {
+  const handleCreate = () => {
     try {
       if (newBallot !== undefined) createBallot(newBallot);
     } catch {
       console.log('Falha na criação da Votação');
     } finally {
       handleClose();
-      // getAllBallots();
     }
   };
 
@@ -127,7 +126,7 @@ export const CreationModal = (props: CreationModalProps) => {
               onChange={(ev) => handleProposalsChange(3, ev.target.value)}
             />
           </div>
-          <button className="createButton" onClick={handleSubmit}>
+          <button className="createButton" onClick={handleCreate}>
             Criar votação
           </button>
         </div>

@@ -11,6 +11,7 @@ export type BallotsCleaned = {
   timestamp: Date;
   title: string;
   description: string;
+  proposals: string[];
 };
 
 export default function App() {

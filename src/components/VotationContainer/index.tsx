@@ -12,13 +12,20 @@ type VotationContainerProps = {
 };
 
 export const VotationContainer = (props: VotationContainerProps) => {
+  const [loading, setLoading] = useState(false);
+  const [selectedBallot, setSelectedBallot] = useState<BallotsCleaned>();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const handleCreateOpen = () => setIsCreateOpen(true);
   const handleCreateClose = () => setIsCreateOpen(false);
   const [isVotationOpen, setIsVotationOpen] = useState(false);
-  const handleVotationOpen = () => setIsVotationOpen(true);
-  const handleVotationClose = () => setIsVotationOpen(false);
-  const [loading, setLoading] = useState(false);
+  const handleVotationOpen = (ballot: BallotsCleaned | undefined) => {
+    setIsVotationOpen(true);
+    setSelectedBallot(ballot);
+  };
+  const handleVotationClose = () => {
+    setIsVotationOpen(false);
+    setSelectedBallot(undefined);
+  };
 
   return (
     <div className="votation-container">
@@ -26,7 +33,7 @@ export const VotationContainer = (props: VotationContainerProps) => {
       <div className="votation-list">
         {props.allBallots.map((ballot, index) => {
           return (
-            <div key={index} className="chip-container" onClick={handleVotationOpen}>
+            <div key={index} className="chip-container" onClick={() => handleVotationOpen(ballot)}>
               <p>{ballot.title}</p>
             </div>
           );
@@ -38,7 +45,11 @@ export const VotationContainer = (props: VotationContainerProps) => {
           Nova votação
         </button>
       </div>
-      <VotationModal isVotationOpen={isVotationOpen} handleClose={handleVotationClose} />
+      <VotationModal
+        isVotationOpen={isVotationOpen}
+        handleClose={handleVotationClose}
+        selectedBallot={selectedBallot}
+      />
       <CreationModal
         isCreateOpen={isCreateOpen}
         handleClose={handleCreateClose}
