@@ -7,11 +7,13 @@ import ballotAbi from './utils/BallotPortal.json';
 import './App.css';
 
 export type BallotsCleaned = {
+  id: number;
   address: string;
   timestamp: Date;
   title: string;
   description: string;
   proposals: string[];
+  deleted: boolean;
 };
 
 export default function App() {
@@ -63,11 +65,13 @@ export default function App() {
 
         const ballotsCleaned = ballots.map((ballot: any) => {
           return {
+            id: ballot.id,
             address: ballot.author,
             timestamp: new Date(ballot.timestamp * 1000),
             title: ballot.title,
             description: ballot.description,
             proposals: ballot.proposals,
+            deleted: ballot.deleted,
           };
         });
 

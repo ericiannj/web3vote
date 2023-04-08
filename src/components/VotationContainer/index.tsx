@@ -26,12 +26,13 @@ export const VotationContainer = (props: VotationContainerProps) => {
     setIsVotationOpen(false);
     setSelectedBallot(undefined);
   };
+  const availableBallots = props.allBallots.filter((ballot) => ballot.deleted === false);
 
   return (
     <div className="votation-container">
       <div className="votation-header">🗳️ Web3Vote</div>
       <div className="votation-list">
-        {props.allBallots.map((ballot, index) => {
+        {availableBallots.map((ballot, index) => {
           return (
             <div key={index} className="chip-container" onClick={() => handleVotationOpen(ballot)}>
               <p>{ballot.title}</p>
@@ -49,6 +50,7 @@ export const VotationContainer = (props: VotationContainerProps) => {
         isVotationOpen={isVotationOpen}
         handleClose={handleVotationClose}
         selectedBallot={selectedBallot}
+        getAllBallots={props.getAllBallots}
       />
       <CreationModal
         isCreateOpen={isCreateOpen}
