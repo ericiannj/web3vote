@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { ethers } from 'ethers';
 import ballotAbi from '../../utils/BallotPortal.json';
 import { useState } from 'react';
+import { Proposal } from '../../App';
 
 type CreationModalProps = {
   isCreateOpen: boolean;
@@ -11,36 +12,43 @@ type CreationModalProps = {
   setLoading: (loading: boolean) => void;
 };
 
-type Ballot = {
+type NewBallot = {
   title: string;
   description: string;
-  proposals: string[];
+  proposals: Proposal[];
+};
+
+const initialNewProposal = {
+  id: undefined,
+  text: '',
+  votes: 0,
 };
 
 const initialNewBallot = {
   title: '',
   description: '',
-  proposals: ['', '', '', ''],
+  proposals: [initialNewProposal, initialNewProposal, initialNewProposal, initialNewProposal],
 };
 
 export const CreationModal = (props: CreationModalProps) => {
   const { isCreateOpen, handleClose, getAllBallots, setLoading } = props;
-  const [newBallot, setNewballot] = useState<Ballot>(initialNewBallot);
+  const [newBallot, setNewballot] = useState<NewBallot>(initialNewBallot);
 
   const ballotContractAddress = import.meta.env.VITE_BALLOT_CONTRACT_ADDRESS;
   const ballotABI = ballotAbi.abi;
 
-  const handleTitleChange = (value: Ballot['title']) => {
+  const handleTitleChange = (value: NewBallot['title']) => {
     setNewballot({ ...newBallot, title: value });
   };
 
-  const handleDescriptionChange = (value: Ballot['description']) => {
+  const handleDescriptionChange = (value: NewBallot['description']) => {
     setNewballot({ ...newBallot, description: value });
   };
 
   const handleProposalsChange = (index: number, value: string) => {
     const newProposalValues = [...newBallot.proposals];
-    newProposalValues[index] = value;
+    newProposalValues[index].text = value;
+    newProposalValues[index].id = index;
     setNewballot({ ...newBallot, proposals: newProposalValues });
   };
 
@@ -54,7 +62,7 @@ export const CreationModal = (props: CreationModalProps) => {
     }
   };
 
-  const createBallot = async (newBallot: Ballot) => {
+  const createBallot = async (newBallot: NewBallot) => {
     try {
       const { ethereum } = window;
 
@@ -107,22 +115,22 @@ export const CreationModal = (props: CreationModalProps) => {
           <div className="options-container">
             <input
               placeholder="Proposta 1"
-              value={newBallot.proposals[0]}
+              value={newBallot.proposals[0].text}
               onChange={(ev) => handleProposalsChange(0, ev.target.value)}
             />
             <input
               placeholder="Proposta 2"
-              value={newBallot.proposals[1]}
+              value={newBallot.proposals[1].text}
               onChange={(ev) => handleProposalsChange(1, ev.target.value)}
             />
             <input
               placeholder="Proposta 3"
-              value={newBallot.proposals[2]}
+              value={newBallot.proposals[2].text}
               onChange={(ev) => handleProposalsChange(2, ev.target.value)}
             />
             <input
               placeholder="Proposta 4"
-              value={newBallot.proposals[3]}
+              value={newBallot.proposals[3].text}
               onChange={(ev) => handleProposalsChange(3, ev.target.value)}
             />
           </div>

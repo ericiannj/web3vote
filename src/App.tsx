@@ -6,13 +6,20 @@ import ballotAbi from './utils/BallotPortal.json';
 
 import './App.css';
 
+export type Proposal = {
+  id?: number;
+  text: string;
+  votes: number;
+};
+
 export type BallotsCleaned = {
   id: number;
   address: string;
   timestamp: Date;
   title: string;
   description: string;
-  proposals: string[];
+  proposals: Proposal[];
+  disabled: boolean;
   deleted: boolean;
 };
 
@@ -64,13 +71,20 @@ export default function App() {
         const ballots = await ballotPortalContract.getAllBallots();
 
         const ballotsCleaned = ballots.map((ballot: any) => {
+          const proposalsCleaned = ballot.proposals.map((proposal: any) => ({
+            id: proposal.id.toNumber(),
+            text: proposal.text,
+            votes: proposal.votes.toNumber(),
+          }));
+
           return {
-            id: ballot.id,
+            id: ballot.id.toNumber(),
             address: ballot.author,
             timestamp: new Date(ballot.timestamp * 1000),
             title: ballot.title,
             description: ballot.description,
-            proposals: ballot.proposals,
+            proposals: proposalsCleaned,
+            disabled: ballot.disabled,
             deleted: ballot.deleted,
           };
         });

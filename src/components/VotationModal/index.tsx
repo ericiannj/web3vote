@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BallotsCleaned } from '../../App';
+import { BallotsCleaned, Proposal } from '../../App';
 import './index.css';
 import classNames from 'classnames';
 import { ethers } from 'ethers';
@@ -15,12 +15,12 @@ type VotationModalProps = {
 export const VotationModal = (props: VotationModalProps) => {
   const { isVotationOpen, handleClose, selectedBallot, getAllBallots } = props;
   const [isDisabled, setDisabled] = useState(false);
-  const [selectedProposal, setSelectedProposal] = useState('');
+  const [selectedProposal, setSelectedProposal] = useState<Proposal>();
   const ballotContractAddress = import.meta.env.VITE_BALLOT_CONTRACT_ADDRESS;
   const ballotABI = ballotAbi.abi;
 
-  const handleProposalChange = (event) => {
-    setSelectedProposal(event.target.value);
+  const handleProposalChange = (proposal: Proposal) => {
+    setSelectedProposal({ ...proposal });
   };
 
   const disableCreate = () => {
@@ -35,7 +35,6 @@ export const VotationModal = (props: VotationModalProps) => {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const ballotPortalContract = new ethers.Contract(ballotContractAddress, ballotABI, signer);
-        console.log('selected', selectedBallot);
 
         // setLoading(true);
         if (selectedBallot?.id !== undefined && selectedBallot?.deleted !== undefined) {
@@ -60,8 +59,35 @@ export const VotationModal = (props: VotationModalProps) => {
     }
   };
 
+  const vote = async () => {
+    const { ethereum } = window;
+
+    try {
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const ballotPortalContract = new ethers.Contract(ballotContractAddress, ballotABI, signer);
+
+        // setLoading(true);
+
+        const voteTxn = await ballotPortalContract.vote(selectedBallot?.id, selectedProposal?.id);
+        console.log('Mining...', voteTxn.hash);
+
+        await voteTxn.wait();
+        console.log('Mined -- ', voteTxn.hash);
+        // setLoading(false);
+        getAllBallots();
+      } else {
+        console.log('No Ethereum Object!');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSubmit = () => {
     console.log('close');
+    vote();
     handleClose();
   };
 
@@ -77,22 +103,26 @@ export const VotationModal = (props: VotationModalProps) => {
         </div>
         <div className="votation-options-container">
           <div className="votation-options">
-            {selectedBallot?.proposals.map((proposal) => (
-              <div key={proposal} className="option">
-                <label htmlFor={proposal}>{proposal}</label>
-                <input
-                  type="checkbox"
-                  id={proposal}
-                  name={proposal}
-                  value={proposal}
-                  checked={selectedProposal === proposal}
-                  onChange={handleProposalChange}
-                />
-              </div>
-            ))}
+            {selectedBallot?.proposals.map((proposal) => {
+              console.log('ISCHECKED', selectedProposal === proposal.text);
+              return (
+                <div key={proposal.id} className="option">
+                  <label htmlFor={proposal.text}>{proposal.text}</label>
+                  <input
+                    type="checkbox"
+                    id={proposal.text}
+                    name={proposal.text}
+                    value={proposal.text}
+                    checked={selectedProposal?.text === proposal.text}
+                    onChange={() => handleProposalChange(proposal)}
+                  />
+                  <h4>Votes: {proposal.votes}</h4>
+                </div>
+              );
+            })}
           </div>
           <button className="voteButton" onClick={handleSubmit} disabled={isDisabled}>
-            Criar votação
+            Votar
           </button>
           <button className="disableButton" onClick={disableCreate}>
             Desabilitar votação
