@@ -12,10 +12,16 @@ type VotationModalProps = {
   getAllBallots: () => Promise<void>;
 };
 
+const initialProposal = {
+  id: undefined,
+  text: '',
+  votes: 0,
+};
+
 export const VotationModal = (props: VotationModalProps) => {
   const { isVotationOpen, handleClose, selectedBallot, getAllBallots } = props;
   const [isDisabled, setDisabled] = useState(false);
-  const [selectedProposal, setSelectedProposal] = useState<Proposal>();
+  const [selectedProposal, setSelectedProposal] = useState<Proposal>(initialProposal);
   const ballotContractAddress = import.meta.env.VITE_BALLOT_CONTRACT_ADDRESS;
   const ballotABI = ballotAbi.abi;
 
@@ -35,7 +41,6 @@ export const VotationModal = (props: VotationModalProps) => {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const ballotPortalContract = new ethers.Contract(ballotContractAddress, ballotABI, signer);
-
         // setLoading(true);
         if (selectedBallot?.id !== undefined && selectedBallot?.deleted !== undefined) {
           const deleteBallotTxn = await ballotPortalContract.deleteBallot(
@@ -48,6 +53,8 @@ export const VotationModal = (props: VotationModalProps) => {
           console.log('Mined -- ', deleteBallotTxn.hash);
           // setLoading(false);
           getAllBallots();
+          setSelectedProposal(initialProposal);
+          handleClose();
         } else {
           console.log('undefined');
         }
@@ -77,6 +84,7 @@ export const VotationModal = (props: VotationModalProps) => {
         console.log('Mined -- ', voteTxn.hash);
         // setLoading(false);
         getAllBallots();
+        setSelectedProposal(initialProposal);
       } else {
         console.log('No Ethereum Object!');
       }
@@ -86,7 +94,6 @@ export const VotationModal = (props: VotationModalProps) => {
   };
 
   const handleSubmit = () => {
-    console.log('close');
     vote();
     handleClose();
   };
@@ -112,7 +119,7 @@ export const VotationModal = (props: VotationModalProps) => {
                     id={proposal.text}
                     name={proposal.text}
                     value={proposal.text}
-                    checked={selectedProposal?.text === proposal.text}
+                    checked={selectedProposal?.id === proposal.id}
                     onChange={() => handleProposalChange(proposal)}
                   />
                   <h4>Votes: {proposal.votes}</h4>

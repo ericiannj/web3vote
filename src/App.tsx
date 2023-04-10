@@ -74,7 +74,6 @@ export default function App() {
 
         const ballotsCleaned = ballots.map((ballot: BallotsSmartContract) => {
           const proposalsCleaned = ballot.proposals.map((proposal: ProposalSmartContract) => {
-            console.log('PROPOSAL', proposal);
             return {
               id: proposal?.id.toNumber(),
               text: proposal.text,

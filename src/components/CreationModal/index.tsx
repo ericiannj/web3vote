@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import { ethers } from 'ethers';
 import ballotAbi from '../../utils/BallotPortal.json';
 import { useState } from 'react';
-import { Proposal } from '../../App';
 
 type CreationModalProps = {
   isCreateOpen: boolean;
@@ -15,19 +14,13 @@ type CreationModalProps = {
 type NewBallot = {
   title: string;
   description: string;
-  proposals: Proposal[];
-};
-
-const initialNewProposal = {
-  id: undefined,
-  text: '',
-  votes: 0,
+  proposals: string[];
 };
 
 const initialNewBallot = {
   title: '',
   description: '',
-  proposals: [initialNewProposal, initialNewProposal, initialNewProposal, initialNewProposal],
+  proposals: ['', '', '', ''],
 };
 
 export const CreationModal = (props: CreationModalProps) => {
@@ -46,9 +39,13 @@ export const CreationModal = (props: CreationModalProps) => {
   };
 
   const handleProposalsChange = (index: number, value: string) => {
-    const newProposalValues = [...newBallot.proposals];
-    newProposalValues[index].text = value;
-    newProposalValues[index].id = index;
+    const newProposalValues = newBallot.proposals.map((proposal, i) => {
+      if (i === index) {
+        return value;
+      } else {
+        return proposal;
+      }
+    });
     setNewballot({ ...newBallot, proposals: newProposalValues });
   };
 
@@ -89,6 +86,7 @@ export const CreationModal = (props: CreationModalProps) => {
         countBallots = await ballotPortalContract.getTotalBallots();
         console.log('Total of ballots...', countBallots.toNumber());
         getAllBallots();
+        setNewballot(initialNewBallot);
       } else {
         console.log('Ethereum Object not found!');
       }
@@ -115,22 +113,22 @@ export const CreationModal = (props: CreationModalProps) => {
           <div className="options-container">
             <input
               placeholder="Proposta 1"
-              value={newBallot.proposals[0].text}
+              value={newBallot.proposals[0]}
               onChange={(ev) => handleProposalsChange(0, ev.target.value)}
             />
             <input
               placeholder="Proposta 2"
-              value={newBallot.proposals[1].text}
+              value={newBallot.proposals[1]}
               onChange={(ev) => handleProposalsChange(1, ev.target.value)}
             />
             <input
               placeholder="Proposta 3"
-              value={newBallot.proposals[2].text}
+              value={newBallot.proposals[2]}
               onChange={(ev) => handleProposalsChange(2, ev.target.value)}
             />
             <input
               placeholder="Proposta 4"
-              value={newBallot.proposals[3].text}
+              value={newBallot.proposals[3]}
               onChange={(ev) => handleProposalsChange(3, ev.target.value)}
             />
           </div>
