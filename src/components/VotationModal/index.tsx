@@ -20,7 +20,6 @@ const initialProposal = {
 
 export const VotationModal = (props: VotationModalProps) => {
   const { isVotationOpen, handleClose, selectedBallot, getAllBallots } = props;
-  const [isDisabled, setDisabled] = useState(false);
   const [selectedProposal, setSelectedProposal] = useState<Proposal>(initialProposal);
   const ballotContractAddress = import.meta.env.VITE_BALLOT_CONTRACT_ADDRESS;
   const ballotABI = ballotAbi.abi;
@@ -30,7 +29,40 @@ export const VotationModal = (props: VotationModalProps) => {
   };
 
   const disableCreate = () => {
-    setDisabled(!isDisabled);
+    disableBallot();
+  };
+
+  const disableBallot = async () => {
+    const { ethereum } = window;
+
+    try {
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const ballotPortalContract = new ethers.Contract(ballotContractAddress, ballotABI, signer);
+        // setLoading(true);
+        if (selectedBallot?.id !== undefined && selectedBallot?.disabled !== undefined) {
+          const disableBallotTxn = await ballotPortalContract.disableBallot(
+            selectedBallot.id,
+            !selectedBallot.disabled,
+          );
+          console.log('Mining...', disableBallotTxn.hash);
+
+          await disableBallotTxn.wait();
+          console.log('Mined -- ', disableBallotTxn.hash);
+          // setLoading(false);
+          getAllBallots();
+          setSelectedProposal(initialProposal);
+          handleClose();
+        } else {
+          console.log('undefined');
+        }
+      } else {
+        console.log('No Ethereum Object!');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const deleteBallot = async () => {
@@ -43,10 +75,7 @@ export const VotationModal = (props: VotationModalProps) => {
         const ballotPortalContract = new ethers.Contract(ballotContractAddress, ballotABI, signer);
         // setLoading(true);
         if (selectedBallot?.id !== undefined && selectedBallot?.deleted !== undefined) {
-          const deleteBallotTxn = await ballotPortalContract.deleteBallot(
-            selectedBallot.id - 1,
-            !selectedBallot.deleted,
-          );
+          const deleteBallotTxn = await ballotPortalContract.deleteBallot(selectedBallot.id, !selectedBallot.deleted);
           console.log('Mining...', deleteBallotTxn.hash);
 
           await deleteBallotTxn.wait();
@@ -127,7 +156,7 @@ export const VotationModal = (props: VotationModalProps) => {
               );
             })}
           </div>
-          <button className="voteButton" onClick={handleSubmit} disabled={isDisabled}>
+          <button className="voteButton" onClick={handleSubmit} disabled={selectedBallot?.disabled === true}>
             Votar
           </button>
           <button className="disableButton" onClick={disableCreate}>
