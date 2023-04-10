@@ -5,6 +5,7 @@ import { VotationContainer } from './components/VotationContainer';
 import ballotAbi from './utils/BallotPortal.json';
 
 import './App.css';
+import { BallotsSmartContract, ProposalSmartContract } from './contract-types';
 
 export type Proposal = {
   id?: number;
@@ -44,16 +45,17 @@ export default function App() {
         console.log('Temos o objeto ethereum', ethereum);
       }
 
-      const accounts = await ethereum.request({ method: 'eth_accounts' });
+      if (ethereum.request !== undefined) {
+        const accounts = await ethereum.request({ method: 'eth_accounts' });
+        if (accounts.length !== 0) {
+          const account = accounts[0];
+          console.log('Encontrada a conta autorizada:', account);
+          setCurrentAccount(account);
 
-      if (accounts.length !== 0) {
-        const account = accounts[0];
-        console.log('Encontrada a conta autorizada:', account);
-        setCurrentAccount(account);
-
-        getAllBallots();
-      } else {
-        console.log('Nenhuma conta autorizada foi encontrada');
+          getAllBallots();
+        } else {
+          console.log('Nenhuma conta autorizada foi encontrada');
+        }
       }
     } catch (error) {
       console.log(error);
@@ -70,12 +72,15 @@ export default function App() {
         const ballotPortalContract = new ethers.Contract(ballotContractAddress, ballotABI, signer);
         const ballots = await ballotPortalContract.getAllBallots();
 
-        const ballotsCleaned = ballots.map((ballot: any) => {
-          const proposalsCleaned = ballot.proposals.map((proposal: any) => ({
-            id: proposal.id.toNumber(),
-            text: proposal.text,
-            votes: proposal.votes.toNumber(),
-          }));
+        const ballotsCleaned = ballots.map((ballot: BallotsSmartContract) => {
+          const proposalsCleaned = ballot.proposals.map((proposal: ProposalSmartContract) => {
+            console.log('PROPOSAL', proposal);
+            return {
+              id: proposal?.id.toNumber(),
+              text: proposal.text,
+              votes: proposal.votes.toNumber(),
+            };
+          });
 
           return {
             id: ballot.id.toNumber(),
@@ -107,10 +112,11 @@ export default function App() {
         return;
       }
 
-      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-
-      console.log('Conectado', accounts[0]);
-      setCurrentAccount(accounts[0]);
+      if (ethereum.request !== undefined) {
+        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        console.log('Conectado', accounts[0]);
+        setCurrentAccount(accounts[0]);
+      }
     } catch (error) {
       console.log(error);
     }

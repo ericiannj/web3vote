@@ -104,7 +104,6 @@ export const VotationModal = (props: VotationModalProps) => {
         <div className="votation-options-container">
           <div className="votation-options">
             {selectedBallot?.proposals.map((proposal) => {
-              console.log('ISCHECKED', selectedProposal === proposal.text);
               return (
                 <div key={proposal.id} className="option">
                   <label htmlFor={proposal.text}>{proposal.text}</label>
