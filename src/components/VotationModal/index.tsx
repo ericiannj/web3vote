@@ -4,12 +4,15 @@ import './index.css';
 import classNames from 'classnames';
 import { ethers } from 'ethers';
 import ballotAbi from '../../utils/BallotPortal.json';
+import { OperationType } from '../VotationContainer';
 
 type VotationModalProps = {
   isVotationOpen: boolean;
   handleClose: () => void;
   selectedBallot?: BallotsCleaned;
   getAllBallots: () => Promise<void>;
+  setLoading: (bool: boolean) => void;
+  setOperation: (op: OperationType) => void;
 };
 
 const initialProposal = {
@@ -19,7 +22,7 @@ const initialProposal = {
 };
 
 export const VotationModal = (props: VotationModalProps) => {
-  const { isVotationOpen, handleClose, selectedBallot, getAllBallots } = props;
+  const { isVotationOpen, handleClose, selectedBallot, getAllBallots, setLoading, setOperation } = props;
   const [selectedProposal, setSelectedProposal] = useState<Proposal>(initialProposal);
   const ballotContractAddress = import.meta.env.VITE_BALLOT_CONTRACT_ADDRESS;
   const ballotABI = ballotAbi.abi;
@@ -28,8 +31,14 @@ export const VotationModal = (props: VotationModalProps) => {
     setSelectedProposal({ ...proposal });
   };
 
-  const disableCreate = () => {
+  const disableVotation = () => {
     disableBallot();
+    handleClose();
+  };
+
+  const deleteVotation = () => {
+    deleteBallot();
+    handleClose();
   };
 
   const disableBallot = async () => {
@@ -40,7 +49,8 @@ export const VotationModal = (props: VotationModalProps) => {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const ballotPortalContract = new ethers.Contract(ballotContractAddress, ballotABI, signer);
-        // setLoading(true);
+        setLoading(true);
+        setOperation('disable');
         if (selectedBallot?.id !== undefined && selectedBallot?.disabled !== undefined) {
           const disableBallotTxn = await ballotPortalContract.disableBallot(
             selectedBallot.id,
@@ -50,7 +60,7 @@ export const VotationModal = (props: VotationModalProps) => {
 
           await disableBallotTxn.wait();
           console.log('Mined -- ', disableBallotTxn.hash);
-          // setLoading(false);
+          setLoading(false);
           getAllBallots();
           setSelectedProposal(initialProposal);
           handleClose();
@@ -73,17 +83,17 @@ export const VotationModal = (props: VotationModalProps) => {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const ballotPortalContract = new ethers.Contract(ballotContractAddress, ballotABI, signer);
-        // setLoading(true);
+        setLoading(true);
+        setOperation('delete');
         if (selectedBallot?.id !== undefined && selectedBallot?.deleted !== undefined) {
           const deleteBallotTxn = await ballotPortalContract.deleteBallot(selectedBallot.id, !selectedBallot.deleted);
           console.log('Mining...', deleteBallotTxn.hash);
 
           await deleteBallotTxn.wait();
           console.log('Mined -- ', deleteBallotTxn.hash);
-          // setLoading(false);
+          setLoading(false);
           getAllBallots();
           setSelectedProposal(initialProposal);
-          handleClose();
         } else {
           console.log('undefined');
         }
@@ -104,14 +114,14 @@ export const VotationModal = (props: VotationModalProps) => {
         const signer = provider.getSigner();
         const ballotPortalContract = new ethers.Contract(ballotContractAddress, ballotABI, signer);
 
-        // setLoading(true);
-
+        setLoading(true);
+        setOperation('vote');
         const voteTxn = await ballotPortalContract.vote(selectedBallot?.id, selectedProposal?.id);
         console.log('Mining...', voteTxn.hash);
 
         await voteTxn.wait();
         console.log('Mined -- ', voteTxn.hash);
-        // setLoading(false);
+        setLoading(false);
         getAllBallots();
         setSelectedProposal(initialProposal);
       } else {
@@ -159,10 +169,10 @@ export const VotationModal = (props: VotationModalProps) => {
           <button className="voteButton" onClick={handleSubmit} disabled={selectedBallot?.disabled === true}>
             Votar
           </button>
-          <button className="disableButton" onClick={disableCreate}>
-            Desabilitar votação
+          <button className="disableButton" onClick={disableVotation}>
+            {!selectedBallot?.disabled ? 'Desabilitar votação' : 'Desbloquear Votação'}
           </button>
-          <button className="deleteButton" onClick={deleteBallot}>
+          <button className="deleteButton" onClick={deleteVotation}>
             Deletar votação
           </button>
         </div>

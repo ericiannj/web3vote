@@ -11,8 +11,11 @@ type VotationContainerProps = {
   getAllBallots: () => Promise<void>;
 };
 
+export type OperationType = 'delete' | 'disable' | 'vote' | 'create' | undefined;
+
 export const VotationContainer = (props: VotationContainerProps) => {
   const [loading, setLoading] = useState(false);
+  const [operation, setOperation] = useState<OperationType>();
   const [selectedBallot, setSelectedBallot] = useState<BallotsCleaned>();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const handleCreateOpen = () => setIsCreateOpen(true);
@@ -40,7 +43,6 @@ export const VotationContainer = (props: VotationContainerProps) => {
           );
         })}
       </div>
-      <LoadingDialog loading={loading} />
       <div className="button-container">
         <button className="create-button" onClick={handleCreateOpen}>
           Nova votação
@@ -51,13 +53,17 @@ export const VotationContainer = (props: VotationContainerProps) => {
         handleClose={handleVotationClose}
         selectedBallot={selectedBallot}
         getAllBallots={props.getAllBallots}
+        setLoading={setLoading}
+        setOperation={setOperation}
       />
       <CreationModal
         isCreateOpen={isCreateOpen}
         handleClose={handleCreateClose}
         getAllBallots={props.getAllBallots}
         setLoading={setLoading}
+        setOperation={setOperation}
       />
+      <LoadingDialog loading={loading} operationDesc={operation} />
     </div>
   );
 };

@@ -3,12 +3,14 @@ import classNames from 'classnames';
 import { ethers } from 'ethers';
 import ballotAbi from '../../utils/BallotPortal.json';
 import { useState } from 'react';
+import { OperationType } from '../VotationContainer';
 
 type CreationModalProps = {
   isCreateOpen: boolean;
   handleClose: () => void;
   getAllBallots: () => Promise<void>;
-  setLoading: (loading: boolean) => void;
+  setLoading: (bool: boolean) => void;
+  setOperation: (op: OperationType) => void;
 };
 
 type NewBallot = {
@@ -24,7 +26,7 @@ const initialNewBallot = {
 };
 
 export const CreationModal = (props: CreationModalProps) => {
-  const { isCreateOpen, handleClose, getAllBallots, setLoading } = props;
+  const { isCreateOpen, handleClose, getAllBallots, setLoading, setOperation } = props;
   const [newBallot, setNewballot] = useState<NewBallot>(initialNewBallot);
 
   const ballotContractAddress = import.meta.env.VITE_BALLOT_CONTRACT_ADDRESS;
@@ -51,10 +53,12 @@ export const CreationModal = (props: CreationModalProps) => {
 
   const handleCreate = () => {
     try {
-      if (newBallot !== undefined) createBallot(newBallot);
+      if (newBallot !== undefined) {
+        createBallot(newBallot);
+        handleClose();
+      }
     } catch {
       console.log('Falha na criação da Votação');
-    } finally {
       handleClose();
     }
   };
@@ -72,6 +76,7 @@ export const CreationModal = (props: CreationModalProps) => {
         console.log('Recovering the number of ballots...', countBallots.toNumber());
 
         setLoading(true);
+        setOperation('create');
         const createBallotTxn = await ballotPortalContract.createBallot(
           newBallot.title,
           newBallot.description,
