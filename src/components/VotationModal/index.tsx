@@ -21,9 +21,21 @@ const initialProposal = {
   votes: 0,
 };
 
+const convertTimestamp = (dateString: Date) => {
+  const date = new Date(dateString);
+
+  const formattedTime = date.toLocaleTimeString('pt-BR', { timeStyle: 'medium' });
+  const formattedWeekday = date.toLocaleDateString('pt-BR', { weekday: 'long' });
+  const formattedDate = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+  const brazilianFormat = `${formattedTime}, ${formattedWeekday}, ${formattedDate}`;
+  return brazilianFormat;
+};
+
 export const VotationModal = (props: VotationModalProps) => {
   const { isVotationOpen, handleClose, selectedBallot, getAllBallots, setLoading, setOperation } = props;
   const [selectedProposal, setSelectedProposal] = useState<Proposal>(initialProposal);
+  const [showHistory, setShowHistory] = useState(false);
   const ballotContractAddress = import.meta.env.VITE_BALLOT_CONTRACT_ADDRESS;
   const ballotABI = ballotAbi.abi;
 
@@ -39,6 +51,10 @@ export const VotationModal = (props: VotationModalProps) => {
   const deleteVotation = () => {
     deleteBallot();
     handleClose();
+  };
+
+  const handleHistory = () => {
+    setShowHistory(!showHistory);
   };
 
   const disableBallot = async () => {
@@ -137,45 +153,79 @@ export const VotationModal = (props: VotationModalProps) => {
     handleClose();
   };
 
+  const availableHistoric = selectedBallot?.historic.filter((historic) => historic.id !== 0);
+
   return (
     <div className={classNames('votation-modal', [{ show: isVotationOpen === true }])}>
       <div className={'votation-modal-container'}>
         <div className={'votation-header'}>
           <p>{selectedBallot?.title}</p>
           <button onClick={handleClose}>Fechar</button>
+          {showHistory ? (
+            <button onClick={handleHistory}>Mostrar Propostas</button>
+          ) : (
+            <button onClick={handleHistory}>Mostrar Histórico</button>
+          )}
         </div>
         <div className={'votation-info-container'}>
           <p>{selectedBallot?.description}</p>
         </div>
-        <div className="votation-options-container">
-          <div className="votation-options">
-            {selectedBallot?.proposals.map((proposal) => {
-              return (
-                <div key={proposal.id} className="option">
-                  <label htmlFor={proposal.text}>{proposal.text}</label>
-                  <input
-                    type="checkbox"
-                    id={proposal.text}
-                    name={proposal.text}
-                    value={proposal.text}
-                    checked={selectedProposal?.id === proposal.id}
-                    onChange={() => handleProposalChange(proposal)}
-                  />
-                  <h4>Votes: {proposal.votes}</h4>
-                </div>
-              );
+        {showHistory ? (
+          <div className="history-container">
+            {availableHistoric?.map((vote) => {
+              if (vote.timestamp !== undefined) {
+                const formatedDate = convertTimestamp(vote.timestamp);
+                const votedProposal = selectedBallot?.proposals.find((proposal) => proposal.id === vote.proposalId);
+                return (
+                  <div key={vote.id} className="historic-container">
+                    <div>
+                      <div className="voter-container">
+                        <p>{vote.voter}</p>
+                      </div>
+                      <div className="proposal-container">
+                        <p>{votedProposal?.text}</p>
+                      </div>
+                    </div>
+
+                    <div className="date-container">
+                      <p>{formatedDate}</p>
+                    </div>
+                  </div>
+                );
+              }
             })}
           </div>
-          <button className="voteButton" onClick={handleSubmit} disabled={selectedBallot?.disabled === true}>
-            Votar
-          </button>
-          <button className="disableButton" onClick={disableVotation}>
-            {!selectedBallot?.disabled ? 'Desabilitar votação' : 'Desbloquear Votação'}
-          </button>
-          <button className="deleteButton" onClick={deleteVotation}>
-            Deletar votação
-          </button>
-        </div>
+        ) : (
+          <div className="votation-options-container">
+            <div className="votation-options">
+              {selectedBallot?.proposals.map((proposal) => {
+                return (
+                  <div key={proposal.id} className="option">
+                    <label htmlFor={proposal.text}>{proposal.text}</label>
+                    <input
+                      type="checkbox"
+                      id={proposal.text}
+                      name={proposal.text}
+                      value={proposal.text}
+                      checked={selectedProposal?.id === proposal.id}
+                      onChange={() => handleProposalChange(proposal)}
+                    />
+                    <h4>Votes: {proposal.votes}</h4>
+                  </div>
+                );
+              })}
+            </div>
+            <button className="voteButton" onClick={handleSubmit} disabled={selectedBallot?.disabled === true}>
+              Votar
+            </button>
+            <button className="disableButton" onClick={disableVotation}>
+              {!selectedBallot?.disabled ? 'Desabilitar votação' : 'Desbloquear Votação'}
+            </button>
+            <button className="deleteButton" onClick={deleteVotation}>
+              Deletar votação
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

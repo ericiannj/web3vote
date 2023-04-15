@@ -5,12 +5,19 @@ import { VotationContainer } from './components/VotationContainer';
 import ballotAbi from './utils/BallotPortal.json';
 
 import './App.css';
-import { BallotsSmartContract, ProposalSmartContract } from './contract-types';
+import { BallotsSmartContract, HistoricalSmartContract, ProposalSmartContract } from './contract-types';
 
 export type Proposal = {
   id?: number;
   text: string;
   votes: number;
+};
+
+export type Historical = {
+  id?: number;
+  voter?: string;
+  timestamp?: Date;
+  proposalId?: number;
 };
 
 export type BallotsCleaned = {
@@ -20,6 +27,7 @@ export type BallotsCleaned = {
   title: string;
   description: string;
   proposals: Proposal[];
+  historic: Historical[];
   disabled: boolean;
   deleted: boolean;
 };
@@ -80,6 +88,18 @@ export default function App() {
               votes: proposal.votes.toNumber(),
             };
           });
+          const historicCleaned = ballot.historic.map((historic: HistoricalSmartContract) => {
+            if (historic.id === undefined || historic.timestamp === undefined || historic.proposalId === undefined) {
+              console.log('Valor indefinido em historic: ', historic);
+              return;
+            }
+            return {
+              id: historic.id.toNumber(),
+              voter: historic.voter,
+              timestamp: new Date(historic.timestamp * 1000),
+              proposalId: historic.proposalId.toNumber(),
+            };
+          });
 
           return {
             id: ballot.id.toNumber(),
@@ -87,6 +107,7 @@ export default function App() {
             timestamp: new Date(ballot.timestamp * 1000),
             title: ballot.title,
             description: ballot.description,
+            historic: historicCleaned,
             proposals: proposalsCleaned,
             disabled: ballot.disabled,
             deleted: ballot.deleted,
