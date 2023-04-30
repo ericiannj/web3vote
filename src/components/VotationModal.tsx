@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import { BallotsCleaned, Proposal } from '../../App';
-import './index.css';
-import classNames from 'classnames';
+import { BallotsCleaned, Proposal } from '../App';
 import { ethers } from 'ethers';
-import ballotAbi from '../../utils/BallotPortal.json';
-import { OperationType } from '../VotationContainer';
+import ballotAbi from '../utils/BallotPortal.json';
+import { OperationType } from './VotationContainer';
 
 type VotationModalProps = {
   isVotationOpen: boolean;
@@ -156,39 +154,60 @@ export const VotationModal = (props: VotationModalProps) => {
   const availableHistoric = selectedBallot?.historic.filter((historic) => historic.id !== 0);
 
   return (
-    <div className={classNames('votation-modal', [{ show: isVotationOpen === true }])}>
-      <div className={'votation-modal-container'}>
-        <div className={'votation-header'}>
-          <p>{selectedBallot?.title}</p>
-          <button onClick={handleClose}>Fechar</button>
+    <div
+      className={`flex justify-center items-center fixed top-0 left-0 w-full h-full bg-strongStone bg-opacity-50  ${
+        isVotationOpen ? '' : 'hidden'
+      }`}
+    >
+      <div className="bg-lightSky h-3/5 w-3/5 p-10 rounded-lg">
+        <div className="flex justify-between mb-5">
+          <p className="text-2xl">{selectedBallot?.title}</p>
+          <button
+            className="cursor-pointer px-4 py-2 rounded-md border-2 border-strongPurple text-strongPurple max-w-max hover:border-hoverPurple hover:text-hoverPurple"
+            onClick={handleClose}
+          >
+            Fechar
+          </button>
           {showHistory ? (
-            <button onClick={handleHistory}>Mostrar Propostas</button>
+            <button
+              className="cursor-pointer px-4 py-2 rounded-md bg-strongPurple text-lightSky max-w-max hover:bg-hoverPurple"
+              onClick={handleHistory}
+            >
+              Mostrar Propostas
+            </button>
           ) : (
-            <button onClick={handleHistory}>Mostrar Histórico</button>
+            <button
+              className="cursor-pointer px-4 py-2 rounded-md bg-strongPurple text-lightSky max-w-max hover:bg-hoverPurple"
+              onClick={handleHistory}
+            >
+              Mostrar Histórico
+            </button>
           )}
         </div>
-        <div className={'votation-info-container'}>
+        <div className="mb-5">
           <p>{selectedBallot?.description}</p>
         </div>
         {showHistory ? (
-          <div className="history-container">
+          <div className="flex flex-col overflow-auto border-2 border-b-strongStone p-4 rounded-lg max-h-80 ">
             {availableHistoric?.map((vote) => {
               if (vote.timestamp !== undefined) {
                 const formatedDate = convertTimestamp(vote.timestamp);
                 const votedProposal = selectedBallot?.proposals.find((proposal) => proposal.id === vote.proposalId);
                 return (
-                  <div key={vote.id} className="historic-container">
+                  <div
+                    key={vote.id}
+                    className="w-full h-1/2 flex flex-row border-2 border-strongStone max-w-490 mb-5 max-h-90"
+                  >
                     <div>
-                      <div className="voter-container">
-                        <p>{vote.voter}</p>
+                      <div className="min-w-3/4 h-1/2 flex justify-center items-center px-5">
+                        <p className="text-xs text-center">{vote.voter}</p>
                       </div>
-                      <div className="proposal-container">
-                        <p>{votedProposal?.text}</p>
+                      <div className="min-w-3/4 h-1/2 flex justify-center items-center ">
+                        <p className="text-center text-base">{votedProposal?.text}</p>
                       </div>
                     </div>
-
-                    <div className="date-container">
-                      <p>{formatedDate}</p>
+                    <div className="w-1/3 h-full border-solid border-l p-1 flex justify-center items-center">
+                      <p className="text-center text-xs">{formatedDate}</p>
                     </div>
                   </div>
                 );
@@ -196,34 +215,50 @@ export const VotationModal = (props: VotationModalProps) => {
             })}
           </div>
         ) : (
-          <div className="votation-options-container">
-            <div className="votation-options">
+          <div>
+            <div className="p-5 bg-strongPurple text-lightSky rounded-lg">
               {selectedBallot?.proposals.map((proposal) => {
                 return (
                   <div key={proposal.id} className="option">
-                    <label htmlFor={proposal.text}>{proposal.text}</label>
-                    <input
-                      type="checkbox"
-                      id={proposal.text}
-                      name={proposal.text}
-                      value={proposal.text}
-                      checked={selectedProposal?.id === proposal.id}
-                      onChange={() => handleProposalChange(proposal)}
-                    />
-                    <h4>Votes: {proposal.votes}</h4>
+                    <label className="w-2/3" htmlFor={proposal.text}>
+                      {proposal.text}
+                    </label>
+                    <div className="w-1/3">
+                      <input
+                        type="checkbox"
+                        id={proposal.text}
+                        name={proposal.text}
+                        value={proposal.text}
+                        checked={selectedProposal?.id === proposal.id}
+                        onChange={() => handleProposalChange(proposal)}
+                      />
+                    </div>
+                    <h4 className="w-1/3">Votos: {proposal.votes}</h4>
                   </div>
                 );
               })}
             </div>
-            <button className="voteButton" onClick={handleSubmit} disabled={selectedBallot?.disabled === true}>
-              Votar
-            </button>
-            <button className="disableButton" onClick={disableVotation}>
-              {!selectedBallot?.disabled ? 'Desabilitar votação' : 'Desbloquear Votação'}
-            </button>
-            <button className="deleteButton" onClick={deleteVotation}>
-              Deletar votação
-            </button>
+            <div className="flex justify-center mt-6">
+              <button
+                className="mr-5 cursor-pointer px-4 py-2 rounded-md bg-strongPurple text-lightSky max-w-max hover:bg-hoverPurple"
+                onClick={handleSubmit}
+                disabled={selectedBallot?.disabled === true}
+              >
+                Votar
+              </button>
+              <button
+                className="mr-5 cursor-pointer px-4 py-2 rounded-md border-2 border-strongPurple text-strongPurple max-w-max hover:border-hoverPurple hover:text-hoverPurple"
+                onClick={disableVotation}
+              >
+                {!selectedBallot?.disabled ? 'Desabilitar votação' : 'Desbloquear Votação'}
+              </button>
+              <button
+                className="cursor-pointer px-4 py-2 rounded-md border-2 border-dangerRed text-dangerRed max-w-max hover:border-hoverRed hover:text-hoverRed"
+                onClick={deleteVotation}
+              >
+                Deletar votação
+              </button>
+            </div>
           </div>
         )}
       </div>

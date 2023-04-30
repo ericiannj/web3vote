@@ -4,7 +4,6 @@ import { LoginWalletContainer } from './components/LoginWalletContainer';
 import { VotationContainer } from './components/VotationContainer';
 import ballotAbi from './utils/BallotPortal.json';
 
-import './App.css';
 import { BallotsSmartContract, HistoricalSmartContract, ProposalSmartContract } from './contract-types';
 
 export type Proposal = {
@@ -143,7 +142,7 @@ export default function App() {
   };
 
   return (
-    <div className="mainContainer">
+    <div className="flex justify-center w-full h-screen items-center bg-strongGray">
       {!currentAccount ? (
         <LoginWalletContainer connectWallet={connectWallet} />
       ) : (

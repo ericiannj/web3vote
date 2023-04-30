@@ -1,10 +1,9 @@
 import { useState } from 'react';
 
-import './index.css';
-import { CreationModal } from '../CreationModal';
-import { VotationModal } from '../VotationModal';
-import { BallotsCleaned } from '../../App';
-import { LoadingDialog } from '../LoadingDialog';
+import { CreationModal } from './CreationModal';
+import { VotationModal } from './VotationModal';
+import { BallotsCleaned } from '../App';
+import { LoadingModal } from './LoadingModal';
 
 type VotationContainerProps = {
   allBallots: BallotsCleaned[];
@@ -32,19 +31,26 @@ export const VotationContainer = (props: VotationContainerProps) => {
   const availableBallots = props.allBallots.filter((ballot) => ballot.deleted === false);
 
   return (
-    <div className="votation-container">
-      <div className="votation-header">🗳️ Web3Vote</div>
-      <div className="votation-list">
+    <div className="flex flex-col p-10 bg-lightSky rounded-lg w-3/4 h-3/5">
+      <div className="flex justify-center text-2xl text-strongStone font-bold mb-6 ">🗳️ Web3Vote</div>
+      <div className="flex flex-row flex-wrap justify-start mt-4 h-4/5 overflow-auto">
         {availableBallots.map((ballot, index) => {
           return (
-            <div key={index} className="chip-container" onClick={() => handleVotationOpen(ballot)}>
+            <div
+              key={index}
+              className="flex justify-center p-3 border-2 mr-12 border-strongStone w-1/5 h-1/6 rounded-lg cursor-pointer  hover:border-strongPurple hover:text-strongPurple"
+              onClick={() => handleVotationOpen(ballot)}
+            >
               <p>{ballot.title}</p>
             </div>
           );
         })}
       </div>
-      <div className="button-container">
-        <button className="create-button" onClick={handleCreateOpen}>
+      <div className="flex justify-center mt-6">
+        <button
+          className="cursor-pointer mt-4 px-4 py-2 rounded-md bg-strongPurple text-lightSky max-w-max hover:bg-hoverPurple"
+          onClick={handleCreateOpen}
+        >
           Nova votação
         </button>
       </div>
@@ -63,7 +69,7 @@ export const VotationContainer = (props: VotationContainerProps) => {
         setLoading={setLoading}
         setOperation={setOperation}
       />
-      <LoadingDialog loading={loading} operationDesc={operation} />
+      <LoadingModal loading={loading} operationDesc={operation} />
     </div>
   );
 };
