@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BallotsCleaned, Proposal } from '../App';
+import { BallotsCleaned, Proposal, Historical } from '../contract-types';
 import { ethers } from 'ethers';
 import ballotAbi from '../utils/BallotPortal.json';
 import { OperationType } from './VotationContainer';
@@ -151,7 +151,7 @@ export const VotationModal = (props: VotationModalProps) => {
     handleClose();
   };
 
-  const availableHistoric = selectedBallot?.historic.filter((historic) => historic.id !== 0);
+  const availableHistoric = selectedBallot?.historic.filter((historic: Historical) => historic.id !== 0);
 
   return (
     <div
@@ -163,7 +163,8 @@ export const VotationModal = (props: VotationModalProps) => {
         <div className="flex justify-between mb-5">
           <p className="text-2xl">{selectedBallot?.title}</p>
           <button
-            className="cursor-pointer px-4 py-2 rounded-md border-2 border-strongPurple text-strongPurple max-w-max hover:border-hoverPurple hover:text-hoverPurple"
+            className="cursor-pointer px-4 py-2 rounded-md border-2 border-strongPurple text-strongPurple max-w-max
+             hover:border-hoverPurple hover:text-hoverPurple"
             onClick={handleClose}
           >
             Fechar
@@ -188,7 +189,7 @@ export const VotationModal = (props: VotationModalProps) => {
           <p>{selectedBallot?.description}</p>
         </div>
         {showHistory ? (
-          <div className="flex flex-col overflow-auto border-2 border-b-strongStone p-4 rounded-lg max-h-80 ">
+          <div className="flex flex-col overflow-auto border-2 border-b-strongStone p-4 rounded-lg max-h-80">
             {availableHistoric?.map((vote) => {
               if (vote.timestamp !== undefined) {
                 const formatedDate = convertTimestamp(vote.timestamp);
@@ -216,10 +217,10 @@ export const VotationModal = (props: VotationModalProps) => {
           </div>
         ) : (
           <div>
-            <div className="p-5 bg-strongPurple text-lightSky rounded-lg">
+            <div className="p-5 bg-strongPurple text-lightSky rounded-lg mt-8">
               {selectedBallot?.proposals.map((proposal) => {
                 return (
-                  <div key={proposal.id} className="option">
+                  <div key={proposal.id} className="flex flex-row mb-6">
                     <label className="w-2/3" htmlFor={proposal.text}>
                       {proposal.text}
                     </label>
@@ -238,7 +239,7 @@ export const VotationModal = (props: VotationModalProps) => {
                 );
               })}
             </div>
-            <div className="flex justify-center mt-6">
+            <div className="flex justify-center mt-11">
               <button
                 className="mr-5 cursor-pointer px-4 py-2 rounded-md bg-strongPurple text-lightSky max-w-max hover:bg-hoverPurple"
                 onClick={handleSubmit}
@@ -247,13 +248,15 @@ export const VotationModal = (props: VotationModalProps) => {
                 Votar
               </button>
               <button
-                className="mr-5 cursor-pointer px-4 py-2 rounded-md border-2 border-strongPurple text-strongPurple max-w-max hover:border-hoverPurple hover:text-hoverPurple"
+                className="mr-5 cursor-pointer px-4 py-2 rounded-md border-2 border-strongPurple text-strongPurple max-w-max 
+                hover:border-hoverPurple hover:text-hoverPurple"
                 onClick={disableVotation}
               >
                 {!selectedBallot?.disabled ? 'Desabilitar votação' : 'Desbloquear Votação'}
               </button>
               <button
-                className="cursor-pointer px-4 py-2 rounded-md border-2 border-dangerRed text-dangerRed max-w-max hover:border-hoverRed hover:text-hoverRed"
+                className="cursor-pointer px-4 py-2 rounded-md border-2 border-dangerRed text-dangerRed max-w-max
+                 hover:border-hoverRed hover:text-hoverRed"
                 onClick={deleteVotation}
               >
                 Deletar votação

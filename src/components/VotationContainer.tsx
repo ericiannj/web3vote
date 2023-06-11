@@ -38,7 +38,8 @@ export const VotationContainer = (props: VotationContainerProps) => {
           return (
             <div
               key={index}
-              className="flex justify-center p-3 border-2 mr-12 border-strongStone w-1/5 h-1/6 rounded-lg cursor-pointer  hover:border-strongPurple hover:text-strongPurple"
+              className="flex justify-center p-3 border-2 mr-12 border-strongStone w-1/5 h-1/6 rounded-lg cursor-pointer 
+               hover:border-strongPurple hover:text-strongPurple"
               onClick={() => handleVotationOpen(ballot)}
             >
               <p>{ballot.title}</p>

@@ -4,32 +4,7 @@ import { LoginWalletContainer } from './components/LoginWalletContainer';
 import { VotationContainer } from './components/VotationContainer';
 import ballotAbi from './utils/BallotPortal.json';
 
-import { BallotsSmartContract, HistoricalSmartContract, ProposalSmartContract } from './contract-types';
-
-export type Proposal = {
-  id?: number;
-  text: string;
-  votes: number;
-};
-
-export type Historical = {
-  id?: number;
-  voter?: string;
-  timestamp?: Date;
-  proposalId?: number;
-};
-
-export type BallotsCleaned = {
-  id: number;
-  address: string;
-  timestamp: Date;
-  title: string;
-  description: string;
-  proposals: Proposal[];
-  historic: Historical[];
-  disabled: boolean;
-  deleted: boolean;
-};
+import { BallotsCleaned, BallotsSmartContract, HistoricalSmartContract, ProposalSmartContract } from './contract-types';
 
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState('');

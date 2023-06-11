@@ -24,3 +24,28 @@ export type HistoricalSmartContract = {
   timestamp?: number;
   proposalId?: BigNumber;
 };
+
+export type Proposal = {
+  id?: number;
+  text: string;
+  votes: number;
+};
+
+export type Historical = {
+  id?: number;
+  voter?: string;
+  timestamp?: Date;
+  proposalId?: number;
+};
+
+export type BallotsCleaned = {
+  id: number;
+  address: string;
+  timestamp: Date;
+  title: string;
+  description: string;
+  proposals: Proposal[];
+  historic: Historical[];
+  disabled: boolean;
+  deleted: boolean;
+};

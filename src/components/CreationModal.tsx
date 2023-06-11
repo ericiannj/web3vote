@@ -112,39 +112,39 @@ export const CreationModal = (props: CreationModalProps) => {
         <div className="mt-3">
           <input
             placeholder="Título"
-            className="p-4 border-2 border-strongPurple"
+            className="p-4 border-2 border-strongPurple h-2 border-solid rounded-md w-3/4 mb-3"
             value={newBallot.title}
             onChange={(ev) => handleTitleChange(ev.target.value)}
           />
           <br />
           <input
             placeholder="Descrição"
-            className="p-4 border-2 border-strongPurple"
+            className="p-4 border-2 border-strongPurple h-2 border-solid rounded-md w-3/4 mb-3"
             value={newBallot.description}
             onChange={(ev) => handleDescriptionChange(ev.target.value)}
           />
           <div className="p-3 bg-strongPurple rounded-r-lg">
             <input
               placeholder="Proposta 1"
-              className="p-4 border-2 border-strongPurple"
+              className="p-4 border-2 border-strongPurple h-2 border-solid rounded-md w-3/4 mb-3 "
               value={newBallot.proposals[0]}
               onChange={(ev) => handleProposalsChange(0, ev.target.value)}
             />
             <input
               placeholder="Proposta 2"
-              className="p-4 border-2 border-strongPurple"
+              className="p-4 border-2 border-strongPurple h-2 border-solid rounded-md w-3/4 mb-3"
               value={newBallot.proposals[1]}
               onChange={(ev) => handleProposalsChange(1, ev.target.value)}
             />
             <input
               placeholder="Proposta 3"
-              className="p-4 border-2 border-strongPurple"
+              className="p-4 border-2 border-strongPurple h-2 border-solid rounded-md w-3/4 mb-3"
               value={newBallot.proposals[2]}
               onChange={(ev) => handleProposalsChange(2, ev.target.value)}
             />
             <input
               placeholder="Proposta 4"
-              className="p-4 border-2 border-strongPurple"
+              className="p-4 border-2 border-strongPurple h-2 border-solid rounded-md w-3/4 mb-3"
               value={newBallot.proposals[3]}
               onChange={(ev) => handleProposalsChange(3, ev.target.value)}
             />
