@@ -4,7 +4,7 @@ type LoginWalletContainerProps = {
 
 export const LoginWalletContainer = (props: LoginWalletContainerProps) => {
   return (
-    <div className="flex flex-col justify-center items-center min-w-450 min-h-170 p-20 bg-lightSky rounded-">
+    <div className="flex flex-col justify-center items-center min-w-450 w-2/5 min-h-170 p-20 bg-lightSky rounded-">
       <div className="text-center text-3xl text-strongStone font-semibold mb-5">🗳️ Web3Vote</div>
       <div className="text-center text-strongStone mt-4 mb-8">
         Bem-vindo a sua Plataforma de Votação Descentralizada

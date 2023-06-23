@@ -5,6 +5,7 @@ import ballotAbi from '../utils/BallotPortal.json';
 import { OperationType } from './VotationContainer';
 
 type VotationModalProps = {
+  currentAccount: string;
   isVotationOpen: boolean;
   handleClose: () => void;
   selectedBallot?: BallotsCleaned;
@@ -31,11 +32,13 @@ const convertTimestamp = (dateString: Date) => {
 };
 
 export const VotationModal = (props: VotationModalProps) => {
-  const { isVotationOpen, handleClose, selectedBallot, getAllBallots, setLoading, setOperation } = props;
+  const { currentAccount, isVotationOpen, handleClose, selectedBallot, getAllBallots, setLoading, setOperation } =
+    props;
   const [selectedProposal, setSelectedProposal] = useState<Proposal>(initialProposal);
   const [showHistory, setShowHistory] = useState(false);
   const ballotContractAddress = import.meta.env.VITE_BALLOT_CONTRACT_ADDRESS;
   const ballotABI = ballotAbi.abi;
+  const isAuthor = currentAccount == selectedBallot?.address.toLowerCase();
 
   const handleProposalChange = (proposal: Proposal) => {
     setSelectedProposal({ ...proposal });
@@ -43,12 +46,12 @@ export const VotationModal = (props: VotationModalProps) => {
 
   const disableVotation = () => {
     disableBallot();
-    handleClose();
+    handleClosePopper();
   };
 
   const deleteVotation = () => {
     deleteBallot();
-    handleClose();
+    handleClosePopper();
   };
 
   const handleHistory = () => {
@@ -146,9 +149,14 @@ export const VotationModal = (props: VotationModalProps) => {
     }
   };
 
+  const handleClosePopper = () => {
+    setSelectedProposal(initialProposal);
+    handleClose();
+  };
+
   const handleSubmit = () => {
     vote();
-    handleClose();
+    handleClosePopper();
   };
 
   const availableHistoric = selectedBallot?.historic.filter((historic: Historical) => historic.id !== 0);
@@ -165,7 +173,7 @@ export const VotationModal = (props: VotationModalProps) => {
           <button
             className="cursor-pointer px-4 py-2 rounded-md border-2 border-strongPurple text-strongPurple max-w-max
              hover:border-hoverPurple hover:text-hoverPurple"
-            onClick={handleClose}
+            onClick={handleClosePopper}
           >
             Fechar
           </button>
@@ -241,23 +249,26 @@ export const VotationModal = (props: VotationModalProps) => {
             </div>
             <div className="flex justify-center mt-11">
               <button
-                className="mr-5 cursor-pointer px-4 py-2 rounded-md bg-strongPurple text-lightSky max-w-max hover:bg-hoverPurple"
+                className="mr-5 cursor-pointer px-4 py-2 rounded-md bg-strongPurple text-lightSky max-w-max
+                 hover:bg-hoverPurple disabled:bg-disabledGrey disabled:cursor-default"
                 onClick={handleSubmit}
-                disabled={selectedBallot?.disabled === true}
+                disabled={selectedProposal.id === undefined || selectedBallot?.disabled === true}
               >
                 Votar
               </button>
               <button
                 className="mr-5 cursor-pointer px-4 py-2 rounded-md border-2 border-strongPurple text-strongPurple max-w-max 
-                hover:border-hoverPurple hover:text-hoverPurple"
+                hover:border-hoverPurple hover:text-hoverPurple disabled:border-disabledGrey disabled:text-disabledGrey disabled:cursor-default"
                 onClick={disableVotation}
+                disabled={!isAuthor}
               >
                 {!selectedBallot?.disabled ? 'Desabilitar votação' : 'Desbloquear Votação'}
               </button>
               <button
                 className="cursor-pointer px-4 py-2 rounded-md border-2 border-dangerRed text-dangerRed max-w-max
-                 hover:border-hoverRed hover:text-hoverRed"
+                 hover:border-hoverRed hover:text-hoverRed disabled: disabled:border-disabledGrey disabled:text-disabledGrey disabled:cursor-default"
                 onClick={deleteVotation}
+                disabled={!isAuthor}
               >
                 Deletar votação
               </button>

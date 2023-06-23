@@ -117,11 +117,11 @@ export default function App() {
   };
 
   return (
-    <div className="flex justify-center w-full h-screen items-center bg-strongGray">
+    <div className="flex justify-center h-screen items-center bg-strongGray min-w-[1280px] min-h-[720px]">
       {!currentAccount ? (
         <LoginWalletContainer connectWallet={connectWallet} />
       ) : (
-        <VotationContainer allBallots={allBallots} getAllBallots={getAllBallots} />
+        <VotationContainer allBallots={allBallots} getAllBallots={getAllBallots} currentAccount={currentAccount} />
       )}
     </div>
   );

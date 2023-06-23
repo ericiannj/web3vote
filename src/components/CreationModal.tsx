@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import ballotAbi from '../utils/BallotPortal.json';
 import { useState } from 'react';
 import { OperationType } from './VotationContainer';
+import { isObjectComplete } from '../utils';
 
 type CreationModalProps = {
   isCreateOpen: boolean;
@@ -11,7 +12,7 @@ type CreationModalProps = {
   setOperation: (op: OperationType) => void;
 };
 
-type NewBallot = {
+export type NewBallot = {
   title: string;
   description: string;
   proposals: string[];
@@ -104,7 +105,7 @@ export const CreationModal = (props: CreationModalProps) => {
         isCreateOpen ? '' : 'hidden'
       }`}
     >
-      <div className="min-w-2/5 max-w-xl bg-lightSky rounded-lg p-8 mt-32">
+      <div className="min-w-2/5 max-w-xl bg-lightSky rounded-lg p-8">
         <div className="flex justify-between">
           <p className="text-2xl font-bold mb-4">Nova votação</p>
           <button onClick={handleClose}>Fechar</button>
@@ -151,8 +152,10 @@ export const CreationModal = (props: CreationModalProps) => {
           </div>
           <div className="flex justify-center mt-6">
             <button
-              className="cursor-pointer px-4 py-2 rounded-md bg-strongPurple text-lightSky max-w-max hover:bg-hoverPurple"
+              className="cursor-pointer px-4 py-2 rounded-md bg-strongPurple
+               text-lightSky max-w-max hover:bg-hoverPurple disabled:bg-disabledGrey disabled:cursor-default"
               onClick={handleCreate}
+              disabled={!isObjectComplete(newBallot)}
             >
               Criar votação
             </button>
