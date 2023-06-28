@@ -93,9 +93,11 @@ export const CreationModal = (props: CreationModalProps) => {
         setNewballot(initialNewBallot);
       } else {
         console.log('Ethereum Object not found!');
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 

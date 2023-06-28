@@ -1,21 +1,64 @@
-# Web3Vote
+<p align="center">
+	<img src="./favicon.ico" width="80">
+</p>
 
-The repository is the project for completing the Digital Systems and Media course at the Federal University of Ceará. It deals with a platform for conducting ballots from a decentralized blockchain-based system.
+<h1 align="center">Web3Vote</h1>
 
-## Installation
+## Status
 
-Use NPM to install the dependencies
+<h4 align="center"> 
+	Web3Vote - In Progress 🚧
+</h4>
 
-```bash
-npm install
+## Description
+
+The repository is the project for completing the Digital Systems and Media undergraduate program at the Federal University of Ceará. It deals with a platform for conducting ballots from a decentralized blockchain-based system.
+
+## Content
+
+- [Description](#description)
+- [Status](#status)
+- [Content](#content)
+- [How to use it?](#how-to-use-it)
+- [Stack and Technoloy](#stack-and-technology)
+
+## How to use it?
+
+Stocks Manager is a front-end project.
+
+1. Clone the repository
+
+```
+git clone https://github.com/ericiannj/web3vote.git
 ```
 
-## Usage
+2. Install the front-end dependencies;
 
-The repository uses the addresses of the smart contracts involved in carrying out operations (creating a new Ballot, voting on a proposal for a given Ballot...). You need to update the link when there are changes to these agreements.
-
-To view the user interfaces:
-
-```bash
-npm run dev
 ```
+yarn
+```
+
+3. Create the .env file and put the smart contract address.
+
+```
+VITE_BALLOT_CONTRACT_ADDRESS=
+```
+
+4. Run the code.
+
+```
+yarn start
+```
+
+Obs: The VITE_BALLOT_CONTRACT_ADDRESS is resulted from the BallotContract deploy ().
+
+## Stack and Technology
+
+- Vite
+- Typescript
+- React JS
+- Tailwind CSS
+
+## Application Photos
+
+<img src="./src/assets/login-screenshot.png">

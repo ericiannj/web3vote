@@ -83,12 +83,15 @@ export const VotationModal = (props: VotationModalProps) => {
           handleClose();
         } else {
           console.log('undefined');
+          setLoading(false);
         }
       } else {
         console.log('No Ethereum Object!');
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -113,12 +116,15 @@ export const VotationModal = (props: VotationModalProps) => {
           setSelectedProposal(initialProposal);
         } else {
           console.log('undefined');
+          setLoading(false);
         }
       } else {
         console.log('No Ethereum Object!');
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -143,9 +149,11 @@ export const VotationModal = (props: VotationModalProps) => {
         setSelectedProposal(initialProposal);
       } else {
         console.log('No Ethereum Object!');
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
