@@ -28,7 +28,7 @@ export const CreationModal = (props: CreationModalProps) => {
   const { isCreateOpen, handleClose, getAllBallots, setLoading, setOperation } = props;
   const [newBallot, setNewballot] = useState<NewBallot>(initialNewBallot);
 
-  const ballotContractAddress = import.meta.env.VITE_BALLOT_CONTRACT_ADDRESS;
+  const ballotContractAddress = '0xDB35b681CfF010aAC190d78CFbDC7620D09C2BB7';
   const ballotABI = ballotAbi.abi;
 
   const handleTitleChange = (value: NewBallot['title']) => {

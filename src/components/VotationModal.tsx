@@ -36,7 +36,7 @@ export const VotationModal = (props: VotationModalProps) => {
     props;
   const [selectedProposal, setSelectedProposal] = useState<Proposal>(initialProposal);
   const [showHistory, setShowHistory] = useState(false);
-  const ballotContractAddress = import.meta.env.VITE_BALLOT_CONTRACT_ADDRESS;
+  const ballotContractAddress = '0xDB35b681CfF010aAC190d78CFbDC7620D09C2BB7';
   const ballotABI = ballotAbi.abi;
   const isAuthor = currentAccount == selectedBallot?.address.toLowerCase();
 

@@ -9,7 +9,7 @@ import { BallotsCleaned, BallotsSmartContract, HistoricalSmartContract, Proposal
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState('');
   const [allBallots, setAllBallots] = useState<BallotsCleaned[]>([]);
-  const ballotContractAddress = import.meta.env.VITE_BALLOT_CONTRACT_ADDRESS;
+  const ballotContractAddress = '0xDB35b681CfF010aAC190d78CFbDC7620D09C2BB7';
   const ballotABI = ballotAbi.abi;
 
   useEffect(() => {
