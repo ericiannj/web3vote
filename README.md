@@ -24,7 +24,7 @@ The repository is the project for completing the Digital Systems and Media under
 
 ## How to use it?
 
-Stocks Manager is a front-end project.
+Web3Vote is a front-end project.
 
 1. Clone the repository
 
