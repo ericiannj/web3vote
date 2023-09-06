@@ -35,7 +35,7 @@ git clone https://github.com/ericiannj/web3vote.git
 2. Install the front-end dependencies;
 
 ```
-yarn
+npm install
 ```
 
 3. Create the .env file and put the smart contract address.
@@ -47,10 +47,10 @@ VITE_BALLOT_CONTRACT_ADDRESS=
 4. Run the code.
 
 ```
-yarn start
+npm run dev
 ```
 
-Obs: The VITE_BALLOT_CONTRACT_ADDRESS is resulted from the BallotContract deploy ().
+Obs: The VITE_BALLOT_CONTRACT_ADDRESS is resulted from the BallotContract deploy.
 
 ## Stack and Technology
 

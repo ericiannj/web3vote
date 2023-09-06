@@ -3,6 +3,7 @@ import { BallotsCleaned, Proposal, Historical } from '../contract-types';
 import { ethers } from 'ethers';
 import ballotAbi from '../utils/BallotPortal.json';
 import { OperationType } from './VotationContainer';
+import { truncateText } from '../utils';
 
 type VotationModalProps = {
   currentAccount: string;
@@ -177,7 +178,7 @@ export const VotationModal = (props: VotationModalProps) => {
     >
       <div className="bg-lightSky h-3/5 w-3/5 p-10 rounded-lg">
         <div className="flex justify-between mb-5">
-          <p className="text-2xl">{selectedBallot?.title}</p>
+          <p className="text-2xl">{truncateText(selectedBallot?.title ?? '', 45)}</p>
           <button
             className="cursor-pointer px-4 py-2 rounded-md border-2 border-strongPurple text-strongPurple max-w-max
              hover:border-hoverPurple hover:text-hoverPurple"
@@ -202,7 +203,7 @@ export const VotationModal = (props: VotationModalProps) => {
           )}
         </div>
         <div className="mb-5">
-          <p>{selectedBallot?.description}</p>
+          <p>{truncateText(selectedBallot?.description ?? '', 95)}</p>
         </div>
         {showHistory ? (
           <div className="flex flex-col overflow-auto border-2 border-b-strongStone p-4 rounded-lg max-h-80">
@@ -215,7 +216,7 @@ export const VotationModal = (props: VotationModalProps) => {
                     key={vote.id}
                     className="w-full h-1/2 flex flex-row border-2 border-strongStone max-w-490 mb-5 max-h-90"
                   >
-                    <div>
+                    <div className="min-w-[50%]">
                       <div className="min-w-3/4 h-1/2 flex justify-center items-center px-5">
                         <p className="text-xs text-center">{vote.voter}</p>
                       </div>
@@ -223,7 +224,7 @@ export const VotationModal = (props: VotationModalProps) => {
                         <p className="text-center text-base">{votedProposal?.text}</p>
                       </div>
                     </div>
-                    <div className="w-1/3 h-full border-solid border-l p-1 flex justify-center items-center">
+                    <div className="border-solid border-l p-1 flex items-center">
                       <p className="text-center text-xs">{formatedDate}</p>
                     </div>
                   </div>
@@ -238,7 +239,7 @@ export const VotationModal = (props: VotationModalProps) => {
                 return (
                   <div key={proposal.id} className="flex flex-row mb-6">
                     <label className="w-2/3" htmlFor={proposal.text}>
-                      {proposal.text}
+                      {truncateText(proposal.text, 45)}
                     </label>
                     <div className="w-1/3">
                       <input
@@ -270,7 +271,7 @@ export const VotationModal = (props: VotationModalProps) => {
                 onClick={disableVotation}
                 disabled={!isAuthor}
               >
-                {!selectedBallot?.disabled ? 'Desabilitar votação' : 'Desbloquear Votação'}
+                {!selectedBallot?.disabled ? 'Desabilitar votação' : 'Habilitar votação'}
               </button>
               <button
                 className="cursor-pointer px-4 py-2 rounded-md border-2 border-dangerRed text-dangerRed max-w-max

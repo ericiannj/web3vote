@@ -110,7 +110,13 @@ export const CreationModal = (props: CreationModalProps) => {
       <div className="min-w-2/5 max-w-xl bg-lightSky rounded-lg p-8">
         <div className="flex justify-between">
           <p className="text-2xl font-bold mb-4">Nova votação</p>
-          <button onClick={handleClose}>Fechar</button>
+          <button
+            className="cursor-pointer px-4 py-2 rounded-md border-2 border-strongPurple text-strongPurple max-w-max
+             hover:border-hoverPurple hover:text-hoverPurple"
+            onClick={handleClose}
+          >
+            Fechar
+          </button>
         </div>
         <div className="mt-3">
           <input

@@ -1,8 +1,8 @@
 import { NewBallot } from '../components/CreationModal';
 
-export const truncateText = (text: string) => {
-  if (text.length > 20) {
-    return text.slice(0, 20) + '...';
+export const truncateText = (text: string, limit: number) => {
+  if (text.length > limit) {
+    return text.slice(0, limit) + '...';
   } else {
     return text;
   }

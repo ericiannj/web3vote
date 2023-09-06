@@ -47,7 +47,7 @@ export const VotationContainer = (props: VotationContainerProps) => {
                 onClick={() => handleVotationOpen(ballot)}
               >
                 <div className="flex items-center h-full shrink-0">
-                  <p className="text-center w-full text-sm">{truncateText(ballot.title)}</p>
+                  <p className="text-center w-full text-sm">{truncateText(ballot.title, 35)}</p>
                 </div>
               </div>
             );
